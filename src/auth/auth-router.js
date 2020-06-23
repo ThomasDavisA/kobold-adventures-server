@@ -1,5 +1,6 @@
 const express = require('express')
 const AuthService = require('./auth-service')
+const KoboldsService = require('../kobold/kobolds-service')
 const authRouter = express.Router()
 const jsonBodyParser = express.json()
 
@@ -39,6 +40,12 @@ authRouter
                     })
 
                     */
+
+                return KoboldsService.getKoboldWithUserId(req.app.get('db'), dbUser.user_id)
+                    .then(kobold => {
+                        res.json(kobold)
+                    })
+
                 res.json({
                    message: 'good'
                 })
