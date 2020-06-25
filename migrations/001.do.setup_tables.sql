@@ -26,7 +26,11 @@ CREATE TABLE kobolds (
  kobold_max_health              integer NOT NULL DEFAULT 100,
  kobold_energy                  integer NOT NULL DEFAULT 100,
  kobold_max_energy              integer NOT NULL DEFAULT 100,
- kobold_energy_used_last        TIMESTAMP DEFAULT NULL
+ kobold_energy_used_last        TIMESTAMP DEFAULT NULL,
+ adventure_xp_tally             integer NOT NULL DEFAULT 0,
+ adventure_nickel_tally         integer NOT NULL DEFAULT 0,
+ adventure_scrap_tally          integer NOT NULL DEFAULT 0,
+ adventure_influence_tally      integer NOT NULL DEFAULT 0
 );
 
 CREATE TABLE locations (
