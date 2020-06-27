@@ -11,34 +11,60 @@ const KoboldsService = {
             .where({ kobold_id })
             .first()
     },
-    updateKoboldXpWithKoboldId(db, kobold_id, xp) {
+    updateKoboldXpWithKoboldId(db, kobold_id) {
         return db('kobolds')
+            .select('kobold_xp', 'adventure_xp_tally')
             .where({ kobold_id })
-            .update({ kobold_xp: xp })
+            .then(results => {
+                return db('kobolds')
+                    .where({ kobold_id })
+                    .update({
+                        kobold_xp: results[0].kobold_xp + results[0].adventure_xp_tally
+                    }, ['kobold_xp'])
+            })
+
     },
-    updateKoboldLevelWithKoboldId(db, kobold_id, kobold_level) {
+    updateKoboldLevelWithKoboldId(db, kobold_id) {
         return db('kobolds')
             .where({ kobold_id })
-            .update({ kobold_level })
-    },
-    updateKoboldCurrencyWithKoboldId(db, kobold_id, nickels, scrap, influence) {
-        return db('kobolds')
-            .where({ kobold_id })
-            .update({
-                currency_wood_nickels: nickels,
-                currency_equipment_scraps: scrap,
-                currency_dragon_influence: influence
+            .select('kobold_level', 'kobold_unspent_points')
+            .then(results => {
+                return db('kobolds')
+                    .where(({ kobold_id }))
+                    .update({
+                        kobold_level: results[0].kobold_level + 1,
+                        kobold_unspent_points: results[0].kobold_unspent_points + 3
+                    })
             })
     },
-    updateKoboldStatsWithKoboldId(db, kobold_id, kobold_muscle, kobold_fitness, kobold_eloquence, kobold_intellect, kobold_mana) {
+    updateKoboldCurrencyWithKoboldId(db, kobold_id) {
+        return db('kobolds')
+            .select('currency_wood_nickels', 'adventure_nickel_tally',
+                    'currency_equipment_scraps', 'adventure_scrap_tally',
+                    'currency_dragon_influence', 'adventure_influence_tally')
+            .where({ kobold_id })
+            .then(results => {
+                return db('kobolds')
+                    .where({ kobold_id })
+                    .update({
+                        currency_wood_nickels: results[0].currency_wood_nickels + results[0].adventure_nickel_tally,
+                        currency_equipment_scraps: results[0].currency_equipment_scraps + results[0].adventure_scrap_tally,
+                        currency_dragon_influence: results[0].currency_dragon_influence + results[0].adventure_influence_tally
+                    })
+            })
+
+    },
+    updateKoboldStatsWithKoboldId(db, kobold_id, koboldStats) {
+        console.log(koboldStats, kobold_id)
         return db('kobolds')
             .where({ kobold_id })
             .update({
-                kobold_muscle,
-                kobold_fitness,
-                kobold_eloquence,
-                kobold_intellect,
-                kobold_mana
+                kobold_unspent_points: koboldStats.kobold_unspent_points,
+                kobold_muscle: koboldStats.kobold_muscle,
+                kobold_fitness: koboldStats.kobold_fitness,
+                kobold_eloquence: koboldStats.kobold_eloquence,
+                kobold_intellect: koboldStats.kobold_intellect,
+                kobold_mana: koboldStats.kobold_mana
             })
     },
     updateAdventureWithKoboldId(db, kobold_id, xp, nickels, scrap, influence) {
@@ -55,10 +81,10 @@ const KoboldsService = {
         return db('kobolds')
             .where({ kobold_id })
             .update({
-                adventure_xp_tally: null,
-                adventure_nickel_tally: null,
-                adventure_scrap_tally: null,
-                adventure_influence_tally: null
+                adventure_xp_tally: 0,
+                adventure_nickel_tally: 0,
+                adventure_scrap_tally: 0,
+                adventure_influence_tally: 0
             })
     }
 }

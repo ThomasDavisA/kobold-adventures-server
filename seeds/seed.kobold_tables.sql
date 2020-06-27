@@ -14,11 +14,11 @@ VALUES
     ('maria', 'password2'),
     ('jacob', 'password3');
 
-INSERT INTO kobolds (user_id, kobold_name, kobold_level)
+INSERT INTO kobolds (user_id, kobold_name, kobold_level, kobold_muscle)
 VALUES
-    (1, 'Bobbles', 2),
-    (2, 'Jarjar', 4),
-    (3, 'Blinky', 10);
+    (1, 'Bobbles', 2, 1),
+    (2, 'Jarjar', 4, 4),
+    (3, 'Blinky', 10, 8);
 
 INSERT INTO locations (location_name, location_description, location_level)
 VALUES

@@ -45,10 +45,6 @@ authRouter
                     .then(kobold => {
                         res.json(kobold)
                     })
-
-                res.json({
-                   message: 'good'
-                })
             })
             .catch(next)
 

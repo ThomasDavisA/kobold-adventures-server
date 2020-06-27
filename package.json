@@ -6,6 +6,7 @@
   "scripts": {
     "test": "mocha -r test/test-setup.js",
     "start": "node src/server.js",
+    "seed": "sudo -u postgres psql -U thomas_davis -d kobold-adventures -f ./seeds/seed.kobold_tables.sql",
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
     "migrate:test": "env NODE_ENV=test npm run migrate",

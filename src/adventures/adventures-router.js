@@ -66,17 +66,101 @@ adventuresRouter
                                 status: true,
                                 message: resolution.resolution_success
                             }
-                            return res.json(resolve)
+
+                            const totalNickels = kobold.adventure_nickel_tally + 9;
+                            const totalXp = kobold.adventure_xp_tally + 2;
+                            const totalScrap = kobold.adventure_scrap_tally || 0;
+                            const totalInfluence = kobold.adventure_influence_tally + 2;
+                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence)
+                                .then(ex => {
+                                    return res.json(resolve)
+                                })
+
+                        } else {
+                            const resolve = {
+                                status: false,
+                                message: resolution.resolution_fail
+                            }
+                            const totalNickels = kobold.adventure_nickel_tally + 2;
+                            const totalXp = kobold.adventure_xp_tally + 8;
+                            const totalScrap = kobold.adventure_scrap_tally + 1;
+                            const totalInfluence = kobold.adventure_influence_tally + 2;
+                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalScrap, totalInfluence)
+                                .then(ex => {
+                                    return res.json(resolve)
+                                })
                         }
-                        const resolve = {
-                            status: false,
-                            message: resolution.resolution_fail
-                        }
-                        return res.json(resolve)
+
+
                     })
             })
 
     })
+
+adventuresRouter
+    .route('/rewards/:id')
+    .get((req, res) => {
+        const koboldId = req.params.id
+        KoboldsService.getKoboldWithKoboldId(req.app.get('db'), koboldId)
+            .then(kobold => {
+                const selectedKobold = kobold
+                KoboldsService.updateKoboldCurrencyWithKoboldId(req.app.get('db'), koboldId)
+                    .then(update => {
+                        KoboldsService.updateKoboldXpWithKoboldId(req.app.get('db'), koboldId)
+                            .then(update => {
+                                //check out level formula here
+                                const BASE_XP_FACTOR = 10
+                                const toNextLevel = (BASE_XP_FACTOR + (((selectedKobold.kobold_level + BASE_XP_FACTOR) / 2) ** 2))
+                                console.log(update, toNextLevel)
+                                if (update[0].kobold_xp >= toNextLevel) {
+                                    console.log('called true')
+                                    KoboldsService.updateKoboldLevelWithKoboldId(req.app.get('db'), koboldId)
+                                        .then(level => {
+                                            const rewards = {
+                                                xp: selectedKobold.adventure_xp_tally,
+                                                nickles: selectedKobold.adventure_nickel_tally,
+                                                scrap: selectedKobold.adventure_scrap_tally,
+                                                influence: selectedKobold.adventure_influence_tally,
+                                                levelUp: true
+                                            }
+                                            KoboldsService.clearAdventureWithKoboldId(req.app.get('db'), koboldId)
+                                                .then(clear => {
+                                                    return res.json(rewards)
+                                                })
+                                        })
+                                } else {
+                                    const rewards = {
+                                        xp: selectedKobold.adventure_xp_tally,
+                                        nickles: selectedKobold.adventure_nickel_tally,
+                                        scrap: selectedKobold.adventure_scrap_tally,
+                                        influence: selectedKobold.adventure_influence_tally,
+                                        levelUp: false
+                                    }
+                                    KoboldsService.clearAdventureWithKoboldId(req.app.get('db'), koboldId)
+                                        .then(clear => {
+                                            return res.json(rewards)
+                                        })
+                                }
+                            })
+                    })
+            })
+    })
+
+async function checkKoboldLevel(req, xp, level, koboldId) {
+    //check out level formula here
+    const BASE_XP_FACTOR = 1
+    const toNextLevel = (BASE_XP_FACTOR + (((level + BASE_XP_FACTOR) / 2) ** 2))
+    console.log(toNextLevel, xp)
+    if (xp >= toNextLevel) {
+        console.log('called true')
+        KoboldsService.updateKoboldLevelWithKoboldId(req.app.get('db'), koboldId)
+            .then(res => {
+                return true;
+            })
+    } else {
+        return false;
+    }
+}
 
 async function generateResolutions(req, res, next) {
     try {
