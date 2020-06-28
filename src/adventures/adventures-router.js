@@ -1,11 +1,13 @@
 const express = require('express')
 const AdventuresService = require('../adventures/adventures-service')
 const KoboldsService = require('../kobold/kobolds-service')
+const { requireAuth } = require('../auth/jwt-auth')
 const adventuresRouter = express.Router()
 const jsonBodyParser = express.json()
 
 adventuresRouter
     .route('/:id')
+    .all(requireAuth)
     .get((req, res) => {
         let location_id = req.params.id
         AdventuresService.getEncounterByLocation(req.app.get('db'), location_id = 1)
@@ -27,6 +29,30 @@ adventuresRouter
 
                         return res.json(AdventurePackage)
                     })
+            })
+    })
+
+adventuresRouter
+    .route('/:koboldId/progress')
+    .all(requireAuth)
+    .get((req, res) => {
+        const kobold_id = req.params.koboldId
+        KoboldsService.getKoboldWithKoboldId(req.app.get('db'), kobold_id)
+            .then(kobold => {
+                const adventureProgress = kobold.adventure_progress
+                console.log(adventureProgress)
+                return res.json(adventureProgress)
+            })
+    })
+
+adventuresRouter
+    .route('/:koboldId/progress')
+    .all(requireAuth)
+    .patch(jsonBodyParser, (req, res, next) => {
+        const kobold_id = req.params.koboldId
+        KoboldsService.clearAdventureProgressWithKoboldId(req.app.get('db'), kobold_id)
+            .then(ex => {
+                return res.status(204).json()
             })
     })
 
@@ -67,11 +93,13 @@ adventuresRouter
                                 message: resolution.resolution_success
                             }
 
+                            const totalProgress = kobold.adventure_progress + 20;
                             const totalNickels = kobold.adventure_nickel_tally + 9;
                             const totalXp = kobold.adventure_xp_tally + 2;
-                            const totalScrap = kobold.adventure_scrap_tally || 0;
+                            const totalScrap = kobold.adventure_scrap_tally;
                             const totalInfluence = kobold.adventure_influence_tally + 2;
-                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence)
+                            console.log(totalProgress, kobold.adventure_progress)
+                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
                                 .then(ex => {
                                     return res.json(resolve)
                                 })
@@ -81,11 +109,14 @@ adventuresRouter
                                 status: false,
                                 message: resolution.resolution_fail
                             }
+
+                            const totalProgress = kobold.adventure_progress + 10;
                             const totalNickels = kobold.adventure_nickel_tally + 2;
                             const totalXp = kobold.adventure_xp_tally + 8;
                             const totalScrap = kobold.adventure_scrap_tally + 1;
                             const totalInfluence = kobold.adventure_influence_tally + 2;
-                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalScrap, totalInfluence)
+                            console.log(totalProgress, kobold.adventure_progress)
+                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
                                 .then(ex => {
                                     return res.json(resolve)
                                 })

@@ -20,12 +20,12 @@ authRouter
             loginUser.username
         )
             .then(dbUser => {
-                if (!dbUser || (loginUser.password !== dbUser.password))
+                if (!dbUser)
                     return res.status(400).json({
                         error: 'Incorrect user_name or password'
                     })
 
-                /*return AuthService.comparePasswords(loginUser.password, dbUser.password)
+                return AuthService.comparePasswords(loginUser.password, dbUser.password)
                     .then(compareMatch => {
                         if (!compareMatch)
                             return res.status(400).json({
@@ -34,16 +34,9 @@ authRouter
                             
                         const sub = dbUser.username
                         const payload = {user_id: dbUser.id}
-                        res.send({
+                        res.status(200).json({
                             authToken: AuthService.createJwt(sub, payload)
                         })
-                    })
-
-                    */
-
-                return KoboldsService.getKoboldWithUserId(req.app.get('db'), dbUser.user_id)
-                    .then(kobold => {
-                        res.json(kobold)
                     })
             })
             .catch(next)

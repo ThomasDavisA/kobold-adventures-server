@@ -15,9 +15,7 @@ const AuthService = {
       .split(':')
   },
   comparePasswords(password, hash) {
-    //for initial version, we are not hashing anything.  Just check for straight plain-text passwords.
-    return password === hash
-    //return bcrypt.compare(password, hash)
+    return bcrypt.compare(password, hash)
   },
   createJwt(subject, payload) {
     return jwt.sign(payload, config.JWT_SECRET, {

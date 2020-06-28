@@ -10,9 +10,9 @@ TRUNCATE
 
 INSERT INTO users (username, password)
 VALUES
-    ('dunder', 'password'),
-    ('maria', 'password2'),
-    ('jacob', 'password3');
+    ('dunder', '$2a$12$peY6J21B.74IPSh9I/b4oOewgCj0YI5j3XEioI7ptCcsPrLVXnhi.'),
+    ('maria', '$2a$12$aNi4fyIx6RHYw6Oe0BPHNerPzdfrfZqy5HeOIjksIqD/41A5N4l3S'),
+    ('jacob', '$2a$12$Xd/E6g1BM3bojhzZRJzoyufIQL19E32tJlDjXa0LeUm7uqX3f0fR6');
 
 INSERT INTO kobolds (user_id, kobold_name, kobold_level, kobold_muscle)
 VALUES

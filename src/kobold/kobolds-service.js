@@ -11,6 +11,14 @@ const KoboldsService = {
             .where({ kobold_id })
             .first()
     },
+    createKoboldWithUser(db, user) {
+        return db('kobolds')
+            .insert({
+                user_id: user.user_id,
+                kobold_name: user.username
+            })
+            .returning('*')
+    },
     updateKoboldXpWithKoboldId(db, kobold_id) {
         return db('kobolds')
             .select('kobold_xp', 'adventure_xp_tally')
@@ -40,8 +48,8 @@ const KoboldsService = {
     updateKoboldCurrencyWithKoboldId(db, kobold_id) {
         return db('kobolds')
             .select('currency_wood_nickels', 'adventure_nickel_tally',
-                    'currency_equipment_scraps', 'adventure_scrap_tally',
-                    'currency_dragon_influence', 'adventure_influence_tally')
+                'currency_equipment_scraps', 'adventure_scrap_tally',
+                'currency_dragon_influence', 'adventure_influence_tally')
             .where({ kobold_id })
             .then(results => {
                 return db('kobolds')
@@ -67,14 +75,15 @@ const KoboldsService = {
                 kobold_mana: koboldStats.kobold_mana
             })
     },
-    updateAdventureWithKoboldId(db, kobold_id, xp, nickels, scrap, influence) {
+    updateAdventureWithKoboldId(db, kobold_id, xp, nickels, scrap, influence, progress) {
         return db('kobolds')
             .where({ kobold_id })
             .update({
                 adventure_xp_tally: xp,
                 adventure_nickel_tally: nickels,
                 adventure_scrap_tally: scrap,
-                adventure_influence_tally: influence
+                adventure_influence_tally: influence,
+                adventure_progress: progress
             })
     },
     clearAdventureWithKoboldId(db, kobold_id) {
@@ -85,6 +94,13 @@ const KoboldsService = {
                 adventure_nickel_tally: 0,
                 adventure_scrap_tally: 0,
                 adventure_influence_tally: 0
+            })
+    },
+    clearAdventureProgressWithKoboldId(db, kobold_id) {
+        return db('kobolds')
+            .where({ kobold_id })
+            .update({
+                adventure_progress: 0
             })
     }
 }

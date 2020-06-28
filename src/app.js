@@ -9,6 +9,7 @@ const authRouter = require('./auth/auth-router')
 const koboldsRouter = require('./kobold/kobolds-router')
 const locationsRouter = require('./locations/locations-router')
 const adventuresRouter = require('./adventures/adventures-router')
+const usersRouter = require ('./users/users-router')
 
 const app = express()
 
@@ -20,11 +21,8 @@ app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
 
-app.get('/api', (req, res) => {
-    res.send('Hello, world!')
-})
-
 app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
 //app.use('/api/locations', locationsRouter)
 app.use('/api/adventure', adventuresRouter)
 app.use('/api/kobold', koboldsRouter)
