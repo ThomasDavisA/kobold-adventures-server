@@ -1,14 +1,14 @@
 const express = require('express')
-const LocationsService = require('../kobold/kobolds-service')
+const LocationsService = require('../locations/locations-service')
 const locationsRouter = express.Router()
 const jsonBodyParser = express.json()
 
 locationsRouter
     .get('/', jsonBodyParser, (req, res) => {
-        const { kobold_level } = req.body
-
-        LocationsService.getLocationByLevel(req.app.get('db'), kobold_level)
+        LocationsService.getLocations(req.app.get('db'))
             .then(locations => {
                 return res.json(locations)
             })
     })
+
+module.exports = locationsRouter

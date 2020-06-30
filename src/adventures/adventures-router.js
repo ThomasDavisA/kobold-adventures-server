@@ -10,7 +10,7 @@ adventuresRouter
     .all(requireAuth)
     .get((req, res) => {
         let location_id = req.params.id
-        AdventuresService.getEncounterByLocation(req.app.get('db'), location_id = 1)
+        AdventuresService.getEncounterByLocation(req.app.get('db'), location_id)
             .then(Encounters => {
                 const encounter = Encounters[Math.floor(Math.random() * Encounters.length)]
 
@@ -26,7 +26,7 @@ adventuresRouter
                         }
 
                         const AdventurePackage = [encounter, ResolutionsList]
-
+                        console.log(AdventurePackage)
                         return res.json(AdventurePackage)
                     })
             })

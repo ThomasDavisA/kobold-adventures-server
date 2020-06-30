@@ -6,6 +6,16 @@ const KoboldsService = {
             .where({ user_id })
             .first()
     },
+    getKoboldWithUsername(db, username){
+        return db('users')
+            .where({username})
+            .first()
+            .then(user => {
+                return db('kobolds')
+                    .where({user_id: user.user_id})
+                    .first()
+            })
+    },
     getKoboldWithKoboldId(db, kobold_id) {
         return db('kobolds')
             .where({ kobold_id })

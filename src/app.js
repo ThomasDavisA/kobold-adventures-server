@@ -23,7 +23,7 @@ app.use(cors())
 
 app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)
-//app.use('/api/locations', locationsRouter)
+app.use('/api/locations', locationsRouter)
 app.use('/api/adventure', adventuresRouter)
 app.use('/api/kobold', koboldsRouter)
 

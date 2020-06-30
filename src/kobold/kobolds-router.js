@@ -5,6 +5,18 @@ const { requireAuth } = require('../auth/jwt-auth')
 const koboldsRouter = express.Router()
 const jsonBodyParser = express.json()
 
+
+koboldsRouter
+    .route('/')
+    .get((req, res) => {
+        const authToken = req.get('authorization')
+        let bearerToken = authToken.slice(7, authToken.length)
+        const token = AuthService.verifyJwt(bearerToken)
+
+        KoboldsService.getKoboldWithUsername(req.app.get('db'), token.sub)
+            .then(kobold => res.json(kobold))
+    })
+
 koboldsRouter
     .route('/')
     .post(jsonBodyParser, (req, res) => {
