@@ -9,8 +9,9 @@
     "seed": "sudo -u postgres psql -U thomas_davis -d kobold-adventures -f ./seeds/seed.kobold_tables.sql",
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
+    "migrate:production": "env SSL=true DATABASE_URL=$(heroku config:get DATABASE_URL) npm run migrate",
     "migrate:test": "env NODE_ENV=test npm run migrate",
-    "predeploy": "npm audit",
+    "predeploy": "npm audit && npm run migrate:production",
     "deploy": "git push heroku master"
   },
   "author": "Thomas Davis",
