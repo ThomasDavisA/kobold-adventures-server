@@ -29,6 +29,7 @@ app.use('/api/kobold', koboldsRouter)
 
 app.use(function errorHandler(error, req, res, next) {
     let response
+    console.log(error)
     if (NODE_ENV === 'production') {
         response = { error: { message: 'server error' } }
     } else {
