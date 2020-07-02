@@ -31,8 +31,8 @@ VALUES
     (1, 'A small slime!', 'Travelling along the plains, you discover a small slime.  Such a low level monster out here makes a perfect encounter for newer kobolds.', 1, 1, 1),
     (1, 'Circle of Stones', 'A simple monument of stones can be seen in the distance!  These ruins, which look to be from an old town, are the perfect spot for a bit of excercise and burning all the energy little kobolds have.', 3, 1, 1),
     (1, 'A field of flowers!', 'While the grasslands can be nondescript at times, seeing a field of flowers is always worth mentioning!  Every kobold knows that such a scene is good luck for your next adventure.', 3, 1, 1),
-    (1, 'A roadside Inn!', 'What luck!  You chance upon an inn on a dirt path, simple and quiet.  Several guests are there, and the innkeeper even greets you like a not kobold!', 4, 1, 1)
-    (1, 'A glowing crystal!', 'When kobolds go on adventures, they always bring back some curious thing from their time out.  This day yields a glowing crystal found nestled on top of a hill, pulsing with what can only be assumed to be energy.', 2, 1, 1)
+    (1, 'A roadside Inn!', 'What luck!  You chance upon an inn on a dirt path, simple and quiet.  Several guests are there, and the innkeeper even greets you like a not kobold!', 4, 1, 1),
+    (1, 'A glowing crystal!', 'When kobolds go on adventures, they always bring back some curious thing from their time out.  This day yields a glowing crystal found nestled on top of a hill, pulsing with what can only be assumed to be energy.', 2, 1, 1),
     (2, 'Another Kobold!', 'A kobold blocks you!', 3, 1, 1),
     (2, 'A big Kobold!', 'A bigger kobold blocks you!', 5, 1, 1),
     (2, 'A giant Kobold!', 'A massive kobold blocks you!', 10, 1, 1),
