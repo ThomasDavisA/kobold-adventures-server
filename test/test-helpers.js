@@ -109,9 +109,97 @@ function makeKoboldsArray() {
     ]
 }
 
+function makeLocationsArray() {
+    return [
+        {
+            location_id: 1,
+            location_name: 'test-location 1',
+            location_description: 'test-desc 1',
+            location_level: 1
+        },
+        {
+            location_id: 2,
+            location_name: 'test-location 2',
+            location_description: 'test-desc 2',
+            location_level: 3
+        },
+    ]
+}
+
+function makeEncountersArray() {
+    return [
+        {
+            encounter_id: 1,
+            location_id: 1,
+            encounter_name: 'test encounter 1',
+            encounter_text: 'text encounter text 1',
+            encounter_level: 1,
+            encounter_base_difficulty: 1,
+            encounter_bonus_difficulty: 1,
+            encounter_base_reward: 1,
+            encounter_bonus_reward: 1
+        },
+        {
+            encounter_id: 2,
+            location_id: 1,
+            encounter_name: 'test encounter 1',
+            encounter_text: 'text encounter text 1',
+            encounter_level: 1,
+            encounter_base_difficulty: 1,
+            encounter_bonus_difficulty: 1,
+            encounter_base_reward: 1,
+            encounter_bonus_reward: 1
+        },
+        {
+            encounter_id: 3,
+            location_id: 2,
+            encounter_name: 'test encounter 1',
+            encounter_text: 'text encounter text 1',
+            encounter_level: 1,
+            encounter_base_difficulty: 1,
+            encounter_bonus_difficulty: 1,
+            encounter_base_reward: 1,
+            encounter_bonus_reward: 1
+        },
+        {
+            encounter_id: 4,
+            location_id: 2,
+            encounter_name: 'test encounter 1',
+            encounter_text: 'text encounter text 1',
+            encounter_level: 1,
+            encounter_base_difficulty: 1,
+            encounter_bonus_difficulty: 1,
+            encounter_base_reward: 1,
+            encounter_bonus_reward: 1
+        }
+    ]
+}
+
+function makeResolutionsArray() {
+    let resolutions = []
+    let key
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 5; j++) {
+            key++
+            resolutions.push(
+                {
+                    id: key,
+                    encounter_id: i,
+                    resolution_name: `test resolution ${j}`,
+                    resolution_action: `test action ${j}`,
+                    resolution_stat: 'muscle',
+                    resolution_success: `test success text ${j}`,
+                    resolution_fail: `test fail text ${j}`
+                }
+            )
+        }
+    }
+    return resolutions
+}
+
 function cleanTables(db) {
     return db.raw(
-      `TRUNCATE
+        `TRUNCATE
         users,
         kobolds,
         locations,
@@ -119,4 +207,27 @@ function cleanTables(db) {
         resolutions
         RESTART IDENTITY CASCADE`
     )
-  }
+}
+
+function seedUsers(db, users) {
+    const preppedUsers = users.map(user => ({
+        ...user,
+        password: bcrypt.hashSync(user.password, 1)
+    }))
+    return db.into('users').insert(preppedUsers)
+        .then(() =>
+            // update the auto sequence to stay in sync
+            db.raw(
+                `SELECT setval('thingful_users_id_seq', ?)`,
+                [users[users.length - 1].id],
+            )
+        )
+}
+
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+    const token = jwt.sign({ user_id: user.id }, secret, {
+        subject: user.user_name,
+        algorithm: 'HS256'
+    })
+    return `Bearer ${token}`
+}

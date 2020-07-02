@@ -6,6 +6,9 @@ const helpers = require('./test-helpers')
 describe('Kobolds endpoints', function () {
     let db
     
+    //const { testUsers } = helpers.makeUsersFixtures()
+    //const testUser = testUsers[0]
+
     before('Make knex instance', () => {
         db = knex({
             client: 'pg',
@@ -17,4 +20,15 @@ describe('Kobolds endpoints', function () {
     after('disconnect from db', () => db.destroy())
     before('cleanup', () => helpers.cleanTables(db))
     afterEach('cleanup', () => helpers.cleanTables(db))
+
+    describe('GET /api/kobolds', () => {
+        beforeEach('insert users', () =>
+        helpers.seedUsers(
+            db, testUsers
+        ))
+
+        it('responds with a kobold when called', () => {
+            
+        })
+    })
 })
