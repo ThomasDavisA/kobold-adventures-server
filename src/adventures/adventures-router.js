@@ -26,7 +26,6 @@ adventuresRouter
                         }
 
                         const AdventurePackage = [encounter, ResolutionsList]
-                        console.log(AdventurePackage)
                         return res.json(AdventurePackage)
                     })
             })
@@ -40,7 +39,6 @@ adventuresRouter
         KoboldsService.getKoboldWithKoboldId(req.app.get('db'), kobold_id)
             .then(kobold => {
                 const adventureProgress = kobold.adventure_progress
-                console.log(adventureProgress)
                 return res.json(adventureProgress)
             })
     })
@@ -58,6 +56,7 @@ adventuresRouter
 
 adventuresRouter
     .route('/resolution/:id/:koboldId')
+    .all(requireAuth)
     .get((req, res) => {
         const resolution_id = req.params.id
         const kobold_id = req.params.koboldId || 1
@@ -98,7 +97,6 @@ adventuresRouter
                             const totalXp = kobold.adventure_xp_tally + 2;
                             const totalScrap = kobold.adventure_scrap_tally;
                             const totalInfluence = kobold.adventure_influence_tally + 2;
-                            console.log(totalProgress, kobold.adventure_progress)
                             KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
                                 .then(ex => {
                                     return res.json(resolve)
@@ -115,7 +113,6 @@ adventuresRouter
                             const totalXp = kobold.adventure_xp_tally + 8;
                             const totalScrap = kobold.adventure_scrap_tally + 1;
                             const totalInfluence = kobold.adventure_influence_tally + 2;
-                            console.log(totalProgress, kobold.adventure_progress)
                             KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
                                 .then(ex => {
                                     return res.json(resolve)
@@ -130,6 +127,7 @@ adventuresRouter
 
 adventuresRouter
     .route('/rewards/:id')
+    .all(requireAuth)
     .get((req, res) => {
         const koboldId = req.params.id
         KoboldsService.getKoboldWithKoboldId(req.app.get('db'), koboldId)
@@ -142,9 +140,7 @@ adventuresRouter
                                 //check out level formula here
                                 const BASE_XP_FACTOR = 10
                                 const toNextLevel = (BASE_XP_FACTOR + (((selectedKobold.kobold_level + BASE_XP_FACTOR) / 2) ** 2))
-                                console.log(update, toNextLevel)
                                 if (update[0].kobold_xp >= toNextLevel) {
-                                    console.log('called true')
                                     KoboldsService.updateKoboldLevelWithKoboldId(req.app.get('db'), koboldId)
                                         .then(level => {
                                             const rewards = {

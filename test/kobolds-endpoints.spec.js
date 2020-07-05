@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Kobolds endpoints', function () {
+describe('Kobolds endpoints', function () {
     let db
 
     const testUsers = helpers.makeUsersArray()

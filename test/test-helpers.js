@@ -44,7 +44,8 @@ function makeKoboldsArray() {
             kobold_health: 100,
             kobold_energy: 100,
             kobold_max_energy: 100,
-            kobold_max_health: 100
+            kobold_max_health: 100,
+            adventure_progress: 0
         },
         {
             kobold_id: 2,
@@ -64,7 +65,8 @@ function makeKoboldsArray() {
             kobold_health: 100,
             kobold_energy: 100,
             kobold_max_energy: 100,
-            kobold_max_health: 100
+            kobold_max_health: 100,
+            adventure_progress: 0
         },
         {
             kobold_id: 3,
@@ -84,7 +86,8 @@ function makeKoboldsArray() {
             kobold_health: 100,
             kobold_energy: 100,
             kobold_max_energy: 100,
-            kobold_max_health: 100
+            kobold_max_health: 100,
+            adventure_progress: 0
         },
     ]
 }
@@ -157,19 +160,19 @@ function makeEncountersArray() {
 
 function makeResolutionsArray() {
     let resolutions = []
-    let key
+    let key = 0
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 5; j++) {
             key++
             resolutions.push(
                 {
                     id: key,
-                    encounter_id: i,
-                    resolution_name: `test resolution ${j}`,
-                    resolution_action: `test action ${j}`,
+                    encounter_id: i + 1,
+                    resolution_name: `test resolution ${j + 1}`,
+                    resolution_action: `test action ${j + 1}`,
                     resolution_stat: 'muscle',
-                    resolution_success: `test success text ${j}`,
-                    resolution_fail: `test fail text ${j}`
+                    resolution_success: `test success text ${j + 1}`,
+                    resolution_fail: `test fail text ${j + 1}`
                 }
             )
         }
@@ -215,6 +218,38 @@ function seedKobolds(db, kobolds, users) {
     })
 }
 
+function seedLocations(db, locations) {
+    return db.into('locations').insert(locations)
+    .then(() =>
+        db.raw(
+            `SELECT setval('locations_location_id_seq', ?)`,
+            [locations[locations.length - 1].location_id],
+        )
+    )
+}
+
+function seedEncounters(db, encounters) {
+    return db.into('encounters').insert(encounters)
+    .then(() =>
+        db.raw(
+            `SELECT setval('encounters_encounter_id_seq', ?)`,
+            [encounters[encounters.length - 1].encounter_id],
+        )
+    )
+}
+
+function seedResolutions(db, locs, encs, res) {
+    return db.transaction(async trx => {
+        await seedLocations(trx, locs)
+        await seedEncounters(trx, encs)
+        await trx.into('resolutions').insert(res)
+        await trx.raw(
+            `SELECT setval('resolutions_id_seq', ?)`,
+            [res[res.length - 1].id],
+        )
+    })
+}
+
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
         subject: user.username,
@@ -226,8 +261,13 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 module.exports = {
     makeUsersArray,
     makeKoboldsArray,
+    makeLocationsArray,
+    makeEncountersArray,
+    makeResolutionsArray,
     seedUsers,
     seedKobolds,
+    seedResolutions,
+    seedLocations,
     cleanTables,
     makeAuthHeader
 }

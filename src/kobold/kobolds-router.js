@@ -21,7 +21,6 @@ koboldsRouter
     .route('/')
     .post(jsonBodyParser, (req, res) => {
         const { username } = req.body
-        console.log( username)
         AuthService.getUserWithUserName(req.app.get('db'), username)
             .then(user => {
                 KoboldsService.createKoboldWithUser(req.app.get('db'), user)
