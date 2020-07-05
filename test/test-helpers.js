@@ -86,26 +86,6 @@ function makeKoboldsArray() {
             kobold_max_energy: 100,
             kobold_max_health: 100
         },
-        {
-            kobold_id: 4,
-            user_id: 4,
-            kobold_name: 'test kobold 4',
-            kobold_level: 4,
-            kobold_xp: 600,
-            kobold_unspent_points: 33,
-            kobold_muscle: 5,
-            kobold_fitness: 6,
-            kobold_eloquence: 7,
-            kobold_mana: 8,
-            kobold_intellect: 10,
-            currency_wood_nickels: 800,
-            currency_equipment_scraps: 39,
-            currency_dragon_influence: 190,
-            kobold_health: 100,
-            kobold_energy: 100,
-            kobold_max_energy: 100,
-            kobold_max_health: 100
-        },
     ]
 }
 
@@ -218,16 +198,36 @@ function seedUsers(db, users) {
         .then(() =>
             // update the auto sequence to stay in sync
             db.raw(
-                `SELECT setval('thingful_users_id_seq', ?)`,
-                [users[users.length - 1].id],
+                `SELECT setval('users_user_id_seq', ?)`,
+                [users[users.length - 1].user_id],
             )
         )
 }
 
+function seedKobolds(db, kobolds, users) {
+    return db.transaction(async trx => {
+        await seedUsers(trx, users)
+        await trx.into('kobolds').insert(kobolds)
+        await trx.raw(
+            `SELECT setval('kobolds_kobold_id_seq', ?)`,
+            [kobolds[kobolds.length - 1].kobold_id],
+        )
+    })
+}
+
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
-        subject: user.user_name,
+        subject: user.username,
         algorithm: 'HS256'
     })
     return `Bearer ${token}`
+}
+
+module.exports = {
+    makeUsersArray,
+    makeKoboldsArray,
+    seedUsers,
+    seedKobolds,
+    cleanTables,
+    makeAuthHeader
 }

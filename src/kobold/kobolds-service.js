@@ -6,13 +6,13 @@ const KoboldsService = {
             .where({ user_id })
             .first()
     },
-    getKoboldWithUsername(db, username){
+    getKoboldWithUsername(db, username) {
         return db('users')
-            .where({username})
+            .where({ username })
             .first()
             .then(user => {
                 return db('kobolds')
-                    .where({user_id: user.user_id})
+                    .where({ user_id: user.user_id })
                     .first()
             })
     },
@@ -28,6 +28,7 @@ const KoboldsService = {
                 kobold_name: user.username
             })
             .returning('*')
+            .then(([kobold]) => kobold)
     },
     updateKoboldXpWithKoboldId(db, kobold_id) {
         return db('kobolds')
@@ -73,7 +74,6 @@ const KoboldsService = {
 
     },
     updateKoboldStatsWithKoboldId(db, kobold_id, koboldStats) {
-        console.log(koboldStats, kobold_id)
         return db('kobolds')
             .where({ kobold_id })
             .update({

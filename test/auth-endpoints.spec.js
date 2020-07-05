@@ -7,7 +7,7 @@ const helpers = require('./test-helpers')
 describe('Auth endpoints', function () {
     let db
 
-    const { testUsers } = helpers.makeThingsFixtures()
+    const testUsers = helpers.makeUsersArray()
     const testUser = testUsers[0]
 
     before('make knex instance', () => {
@@ -32,11 +32,11 @@ describe('Auth endpoints', function () {
             )
         )
 
-        const requiredFields = ['user_name', 'password']
+        const requiredFields = ['username', 'password']
 
         requiredFields.forEach(field => {
             const loginAttemptBody = {
-                user_name: testUser.user_name,
+                username: testUser.username,
                 password: testUser.password
             }
 
@@ -52,8 +52,8 @@ describe('Auth endpoints', function () {
             })
         })
 
-        it(`responds 400 'invalid user_name or password' when bad user_name`, () => {
-            const userInvalidUser = { user_name: 'user-not', password: 'existy' }
+        it(`responds 400 'invalid username or password' when bad username`, () => {
+            const userInvalidUser = { username: 'user-not', password: 'existy' }
             return supertest(app)
                 .post('/api/auth/login')
                 .send(userInvalidUser)
@@ -61,7 +61,7 @@ describe('Auth endpoints', function () {
         })
 
         it(`responds 400 'invalid user_name or password' when bad password`, () => {
-            const userInvalidPass = { user_name: testUser.user_name, password: 'incorrect' }
+            const userInvalidPass = { username: testUser.username, password: 'incorrect' }
             return supertest(app)
                 .post('/api/auth/login')
                 .send(userInvalidPass)
@@ -70,14 +70,14 @@ describe('Auth endpoints', function () {
 
         it(`responds 200 and JWT auth token using secret when valid credentials`, () => {
             const userValidCred = {
-                user_name: testUser.user_name,
+                username: testUser.username,
                 password: testUser.password
             }
             const expectedToken = jwt.sign(
                 { user_id: testUser.id },
                 process.env.JWT_SECRET,
                 {
-                    subject: testUser.user_name,
+                    subject: testUser.username,
                     algorithm: 'HS256',
                 }
             )

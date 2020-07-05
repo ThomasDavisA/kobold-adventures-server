@@ -24,31 +24,7 @@ koboldsRouter
         console.log( username)
         AuthService.getUserWithUserName(req.app.get('db'), username)
             .then(user => {
-                console.log(user)
                 KoboldsService.createKoboldWithUser(req.app.get('db'), user)
-                    .then(kobold => {
-                        console.log(kobold)
-                        return res.json(kobold)
-                    })
-            })
-    })
-
-koboldsRouter
-    .route('/login')
-    .get(jsonBodyParser, (req, res) => {
-
-        const authToken = req.get('authorization')
-        let bearerToken = authToken.slice(7, authToken.length)
-        const token = AuthService.verifyJwt(bearerToken)
-
-        console.log(token, res.body)
-
-        AuthService.getUserWithUserName(
-            req.app.get('db'),
-            token.sub
-        )
-            .then(user => {
-                KoboldsService.getKoboldWithUserId(req.app.get('db'), user.user_id)
                     .then(kobold => {
                         return res.json(kobold)
                     })
@@ -64,7 +40,7 @@ koboldsRouter
                 return res.json(kobold)
             })
     })
-    .patch(jsonBodyParser, (req, res, next) => {
+    .patch(jsonBodyParser, (req, res) => {
         const koboldStats = req.body
         KoboldsService.updateKoboldStatsWithKoboldId(req.app.get('db'), req.params.id, koboldStats)
             .then(ex => {
