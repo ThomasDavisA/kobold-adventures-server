@@ -173,46 +173,4 @@ adventuresRouter
             })
     })
 
-async function checkKoboldLevel(req, xp, level, koboldId) {
-    //check out level formula here
-    const BASE_XP_FACTOR = 1
-    const toNextLevel = (BASE_XP_FACTOR + (((level + BASE_XP_FACTOR) / 2) ** 2))
-    console.log(toNextLevel, xp)
-    if (xp >= toNextLevel) {
-        console.log('called true')
-        KoboldsService.updateKoboldLevelWithKoboldId(req.app.get('db'), koboldId)
-            .then(res => {
-                return true;
-            })
-    } else {
-        return false;
-    }
-}
-
-async function generateResolutions(req, res, next) {
-    try {
-        const location_id = req.params.id
-        const encountersTable = await AdventuresService.getEncounterByLocation(req.app.get('db'), location_id)
-
-        if (!encountersTable) //Incorrect location_id, default to forest
-            encountersTable = await AdventuresService.getEncounterByLocation(req.app.get('db'), 1)
-
-        const encounter = encountersTable[Math.floor(Math.random() * encountersTable.length)]
-        let ResolutionsTable = await AdventuresService.getResolutionsByEncounter(req.add.get('db'), encounter.id)
-
-        const ResolutionsList = [];
-
-        //Send back 4 resolutions to return for client to render
-        for (i = 0; i < 4; i++) {
-            const newResolution = ResolutionsTable[Math.floor(Math.random() * ResolutionsTable.length)]
-            ResolutionsList.push(newResolution);
-            ResolutionsTable = ResolutionsTable.filter(resolution => resolution.id !== newResolution.id)
-        }
-
-        return res.json(encounter, ResolutionsList)
-    } catch (error) {
-        next(error)
-    }
-}
-
 module.exports = adventuresRouter

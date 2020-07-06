@@ -76,14 +76,14 @@ describe('Adventures endpoints', function () {
                     expect(res.body).to.be.an('object')
                     expect(res.body.status).to.exist
                     expect(res.body.message).to.exist
-                    // then(() => {
-                    //     return supertest(app)
-                    //     .get('/api/kobold/')
-                    //     .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-                    //     .expect(res => {
-                    //         expect(res.body.adventure_progress).to.be.above(0)
-                    //     })
-                    // })
+                    expect(() => {
+                        return supertest(app)
+                        .get('/api/kobold/')
+                        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                        .expect(res => {
+                            expect(res.body.adventure_progress).to.be.above(0)
+                        })
+                    })
                 })
         })
 
