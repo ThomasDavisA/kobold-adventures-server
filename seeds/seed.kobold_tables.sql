@@ -37,8 +37,8 @@ VALUES
     (2, 'A Mysterious Shrine', 'The mists obscure your vision as you walk around, but you suddenly find yourself a small mystical stone shrine.  The inscriptions are faded (you can''t read them anyway), and a small pool of water sits still in the center of the shrine.', 5, 1, 1),
     (2, 'A gem!', 'The fog lays thick around this time, and you have difficulty moving around... though eventaully you find a shiny gem at your feet!  Pretty and glittering, it shines with an unnatural aura.', 10, 1, 1),
     (2, 'A small beach!', 'Despite it being a lake, your travels seem to case you finding a small cave that leads you to a small and tiny beach, with sand and a breeze!  Perhaps its magical, but how its existance is here, at a lake, is anyone''s guess.', 5, 1, 1),
-    (2, 'A fruit stand!', 'The sun has pierced through the fog for now, revealing a crystal clear lake before you!  And more importantly, a fruit stand with a human selling goods.  A perfect opportunity to do a little kobolding.', 10, 1, 1)
-    (2, 'A quiet spot.', 'The sun has pierced through the fog for now, revealing a very secluded spot on the lakeside.  It''s quite serene and is very inviting to just lay and relax to listen to the water lap against the shoreline.', 1, 1, 1)
+    (2, 'A fruit stand!', 'The sun has pierced through the fog for now, revealing a crystal clear lake before you!  And more importantly, a fruit stand with a human selling goods.  A perfect opportunity to do a little kobolding.', 10, 1, 1),
+    (2, 'A quiet spot.', 'The sun has pierced through the fog for now, revealing a very secluded spot on the lakeside.  It''s quite serene and is very inviting to just lay and relax to listen to the water lap against the shoreline.', 1, 1, 1),
     (3, 'A thief!', 'Walking through the town is quite a sight, with many people bustling about!  However, a thief nearby manages to snatch a purse and makes a run for it!  He ends up turning down an alleyway and is stuck at a fence, trying to climb his way out of the situation.', 8, 1, 1),
     (3, 'A Quiet Alleyway.', 'The town of Filnswyth is home to many traders and the town is bustling at this hour!  Thankfully, there is a quiet alleyway that seems perfect for kobolds to spend their time in.', 10, 1, 1),
     (3, 'The king!', 'The king is visiting today!  He may be impressive to the people, but he has nothing on the dragons kobolds worship.  As he makes his way down the street in a parade, he looks around and nods to all of his subjects.', 20, 1, 1);
@@ -191,7 +191,7 @@ VALUES
     (7, 'Dance to the shrine!', 
         'Eloquence', 18, 
         'Sometimes kobolds just need to dance. So you do! You dance around the shrine and make ceremonial yips and yaps! You seem to have appeased the spirits of the shrine, as the water in the shrine glows a soft blue before fading back to clear.  It leaves you feeling reinvigorated and ready to continue your day!', 
-        'Sometimes kobolds just need to dance. So you do! You dance around the shrine, but trip over your moves and fall on your back!  It leaves you feeling sore, and the shrine certainly doesn''t seem to even register your dance either.  You leave a bit dejected.');
+        'Sometimes kobolds just need to dance. So you do! You dance around the shrine, but trip over your moves and fall on your back!  It leaves you feeling sore, and the shrine certainly doesn''t seem to even register your dance either.  You leave a bit dejected.'),
     -- Encounter: Lakeside, Gem --
     (8, 'Throw the Gem!', 
         'Muscle', 30, 
