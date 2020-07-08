@@ -33,7 +33,7 @@ function makeKoboldsArray() {
             kobold_level: 2,
             kobold_xp: 100,
             kobold_unspent_points: 3,
-            kobold_muscle: 1,
+            kobold_muscle: 3,
             kobold_fitness: 1,
             kobold_eloquence: 1,
             kobold_mana: 1,
@@ -169,8 +169,8 @@ function makeResolutionsArray() {
                     id: key,
                     encounter_id: i + 1,
                     resolution_name: `test resolution ${j + 1}`,
-                    resolution_action: `test action ${j + 1}`,
-                    resolution_stat: 'muscle',
+                    resolution_action: `Muscle`,
+                    resolution_stat: 5,
                     resolution_success: `test success text ${j + 1}`,
                     resolution_fail: `test fail text ${j + 1}`
                 }

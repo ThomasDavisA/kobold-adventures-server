@@ -2,6 +2,8 @@ const express = require('express')
 const AdventuresService = require('../adventures/adventures-service')
 const KoboldsService = require('../kobold/kobolds-service')
 const { requireAuth } = require('../auth/jwt-auth')
+const { restart } = require('nodemon')
+const { compareSync } = require('bcryptjs')
 const adventuresRouter = express.Router()
 const jsonBodyParser = express.json()
 
@@ -65,64 +67,34 @@ adventuresRouter
                 const getKobold = kobold
                 AdventuresService.getResolutionById(req.app.get('db'), resolution_id)
                     .then(resolution => {
-                        let statRoll = 0
-                        switch (resolution.resolution_stat) {
-                            case 'Muscle':
-                                statRoll = kobold.kobold_muscle
-                                break;
-                            case 'Fitness':
-                                statRoll = kobold.kobold_fitness
-                                break;
-                            case 'Eloquence':
-                                statRoll = kobold.kobold_eloquence
-                                break;
-                            case 'Intellect':
-                                statRoll = kobold.kobold_intellect
-                                break;
-                            case 'Mana':
-                                statRoll = kobold.kobold_mana
-                                break;
-                        }
-
                         //Send a success or failure based on stats
-                        const roll = Math.floor(Math.random() * 20) + statRoll;
-                        if (roll >= resolution.resolution_stat) {
-                            const resolve = {
+                        const koboldRoll = getRoll(resolution, kobold)
+                        const result = getBonusOrPenalty(koboldRoll, resolution.resolution_stat)
+
+                        let resolve = {}
+                        if (result.success) {
+                            resolve = {
                                 status: true,
                                 message: resolution.resolution_success
                             }
-
-                            const totalProgress = kobold.adventure_progress + 20;
-                            const totalNickels = kobold.adventure_nickel_tally + 9;
-                            const totalXp = kobold.adventure_xp_tally + 2;
-                            const totalScrap = kobold.adventure_scrap_tally;
-                            const totalInfluence = kobold.adventure_influence_tally + 2;
-                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
-                                .then(ex => {
-                                    return res.json(resolve)
-                                })
-
                         } else {
-                            const resolve = {
+                            resolve = {
                                 status: false,
                                 message: resolution.resolution_fail
                             }
-
-                            const totalProgress = kobold.adventure_progress + 10;
-                            const totalNickels = kobold.adventure_nickel_tally + 2;
-                            const totalXp = kobold.adventure_xp_tally + 8;
-                            const totalScrap = kobold.adventure_scrap_tally + 1;
-                            const totalInfluence = kobold.adventure_influence_tally + 2;
-                            KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
-                                .then(ex => {
-                                    return res.json(resolve)
-                                })
                         }
 
-
+                        const totalProgress = kobold.adventure_progress + result.advProgress;
+                        const totalNickels = kobold.adventure_nickel_tally + result.woodNickels;
+                        const totalXp = kobold.adventure_xp_tally + result.koboldXP;
+                        const totalScrap = kobold.adventure_scrap_tally + result.equipScrap;
+                        const totalInfluence = kobold.adventure_influence_tally + result.dragInfluence;
+                        KoboldsService.updateAdventureWithKoboldId(req.app.get('db'), kobold.kobold_id, totalXp, totalNickels, totalScrap, totalInfluence, totalProgress)
+                            .then(ex => {
+                                return res.json(resolve)
+                            })
                     })
             })
-
     })
 
 adventuresRouter
@@ -172,5 +144,91 @@ adventuresRouter
                     })
             })
     })
+
+function getRoll(resolution, kobold) {
+    //get our roll based on stat, and create the roll based on number given.
+    let statRoll = 0
+    switch (resolution.resolution_action) {
+        case 'Muscle':
+            statRoll = kobold.kobold_muscle
+            break;
+        case 'Fitness':
+            statRoll = kobold.kobold_fitness
+            break;
+        case 'Eloquence':
+            statRoll = kobold.kobold_eloquence
+            break;
+        case 'Intellect':
+            statRoll = kobold.kobold_intellect
+            break;
+        case 'Mana':
+            statRoll = kobold.kobold_mana
+            break;
+    }
+
+    let minValue = Math.floor(statRoll / 7)
+    if (minValue <= 0) { minValue = 1 }
+    let maxValue = Math.floor(statRoll / 3)
+    if (maxValue < 4) { maxValue = 4 }
+    let diceValue = Math.floor(statRoll / 20)
+    if (diceValue < 1) { diceValue = 1 }
+
+    let roll = 0
+    for (i = 0; i < diceValue; i++) {
+        roll = roll + (Math.floor(Math.random() * (maxValue - minValue)) + minValue)
+    }
+
+    return roll
+}
+
+function getBonusOrPenalty(koboldStat, resolutionStat) {
+    resolutionStat = parseInt(resolutionStat)
+    if (koboldStat < resolutionStat) {
+        //calculate penalty to progress and rewards, but gain bonus to xp
+        let penalty = (resolutionStat - koboldStat) / resolutionStat
+        if (penalty > .5)
+            penalty = .5
+
+        const success = false;
+        const woodNickels = Math.floor((resolutionStat / 2) - ((resolutionStat / 2) * penalty)) + 1
+        const equipScrap = Math.floor((resolutionStat / 10) - ((resolutionStat / 10) * penalty))
+        const dragInfluence = Math.floor((resolutionStat / 5) - ((resolutionStat / 5) * penalty)) + 1
+        const koboldXP = Math.floor((resolutionStat / 3) + ((resolutionStat / 3) * penalty)) + 1
+        const advProgress = Math.floor((resolutionStat) + ((resolutionStat) * penalty))
+
+        const result = {
+            success: success,
+            woodNickels: woodNickels,
+            equipScrap: equipScrap,
+            dragInfluence: dragInfluence,
+            koboldXP: koboldXP,
+            advProgress: advProgress
+        }
+
+        return result
+    } else {
+        //bonus to rewards, penalty to xp
+        let bonus = (koboldStat - resolutionStat) / koboldStat
+        if (bonus > .5)
+            bonus = .5
+        const success = true;
+        const woodNickels = Math.floor((resolutionStat / 2) + ((resolutionStat / 2) * bonus)) + 1
+        const equipScrap = Math.floor((resolutionStat / 10) + ((resolutionStat / 10) * bonus))
+        const dragInfluence = Math.floor((resolutionStat / 5) + ((resolutionStat / 5) * bonus)) + 1
+        const koboldXP = Math.floor((resolutionStat / 3) - ((resolutionStat / 3) * bonus)) + 1
+        const advProgress = Math.floor((resolutionStat) - ((resolutionStat) * bonus))
+
+        const result = {
+            success: success,
+            woodNickels: woodNickels,
+            equipScrap: equipScrap,
+            dragInfluence: dragInfluence,
+            koboldXP: koboldXP,
+            advProgress: advProgress
+        }
+
+        return result
+    }
+}
 
 module.exports = adventuresRouter

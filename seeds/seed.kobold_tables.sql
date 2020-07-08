@@ -209,10 +209,10 @@ VALUES
         'Intellect', 10, 
         'The eerie gem is pretty easy to discover that a poor soul was caputred by its power, though how to release it is beyond you!  You hold onto the gem briefly, searching some someone who can help before you discover a nearby human adventurer.  You give him the gem as he looks completely confused by the fact a kobold is giving him something, before you walk away, feeling much better that he''ll be able to free the spirit rather than you!', 
         'The gem is simply a gem to you, and the eerieness is just there for effects and to scare away not greedy kobolds!  You clasp it in your claws and hold onto it, but you bump into a wandering bandit, who brandishes a dagger at you!  You quickly give up the gem for your life and run away, feeling a bit more dejected.'),
-    (8, 'Dance!', 
+    (8, 'Wear the gem as a necklace!', 
         'Eloquence', 20, 
-        'You dance with the gem!', 
-        'You don''t dance well enough with the gem.'),
+        'You wear it quite well, wrapping it around a simple bit of twine.  It feels warm on your chest, and as you travel, the aura fades and you feel oddly refreshed.  You feel a gentle pat on your head, and when you turn around, you briefly see the spirit of a beautiful maiden as she disappears.  You feel refreshed!', 
+        'You wear it quite well, but you wrap it around twine rather poorly.  The gem slips from its place quickly enough and you lose it in the brush.  Unfortunately, losing the gem also seems to make you feel a bit drained, as you trudge on to the next adventure.'),
     -- Encounter: Lakeside, Beach --
     (7, 'Play in the sand!', 
         'Muscle', 10, 
