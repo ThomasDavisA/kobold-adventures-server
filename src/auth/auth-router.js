@@ -1,6 +1,5 @@
 const express = require('express')
 const AuthService = require('./auth-service')
-const KoboldsService = require('../kobold/kobolds-service')
 const authRouter = express.Router()
 const jsonBodyParser = express.json()
 

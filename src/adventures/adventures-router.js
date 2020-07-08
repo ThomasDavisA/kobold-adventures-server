@@ -2,8 +2,6 @@ const express = require('express')
 const AdventuresService = require('../adventures/adventures-service')
 const KoboldsService = require('../kobold/kobolds-service')
 const { requireAuth } = require('../auth/jwt-auth')
-const { restart } = require('nodemon')
-const { compareSync } = require('bcryptjs')
 const adventuresRouter = express.Router()
 const jsonBodyParser = express.json()
 
