@@ -1,14 +1,24 @@
 # Kobold Adventures!
 
-Live App: https://kobold-adventures.thomasdavisa.vercel.app/
+**Live App: https://kobold-adventures.thomasdavisa.vercel.app/**
 
 ## Summary
 
-Kobold Adventures is a simple text-based adventure game created using Node.js and React.  Register an account, and immediately travel the lands as your very own kobold!  Go on adventures and get into situtations, with each action giving a different resolution to every encounter.  This is the server side portion of Kobold Adventures, and as such, contains no images.
+Kobold Adventures is a simple text-based adventure game where you take control of a kobold and go out to explore the lands to have silly and simple adventures.  To start, you may login or register to the website.  We have three dummy accounts for you to trial the game as well:
+
+Name | Password
+---------|----------
+dunder | password
+maria | password2
+jacob | password3
+
+Upon logging in, you'll be greeted with the news screen, and the choice to adventure or look at your status.  You may assign status points in the status screen, and may re-allocate points whenever you want.  When you go adventuring, you are presented with several locations to pick.  Upon selecing an area, you are then taken to the encounter screens, where you must play out each encounter.  Regardless of success or failure of each encounter, you make progress throughout the day.  At the end of the day, your adventure is complete, and you tally up all the currencies and experience you gain through the adventure.  And that's it!  Continue to explore each area fully to see all the options you can discover, as every encounter has multiple ways of resolving themselves.
+
+![Going on an adventure!](https://i.imgur.com/KXBl3Er.png) ![The status screen.](https://i.imgur.com/LzclImT.png)
 
 ## Technologies
 
-Kobold Adventures uses Node.js and PostgreSQL for its serverside and database functionality.
+Kobold Adventures uses Node.js and PostgreSQL for its serverside and database functionality.  The client uses React.
 
 ## API
 The Server API is seperated into:
